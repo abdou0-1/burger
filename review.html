@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burger Place - Reviews</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="review.html">Reviews</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="reviews">
+      <h2>Customer Reviews</h2>
+      <p>Share your experience with us!</p>
+
+      <!-- Review Form -->
+      <form id="reviewForm">
+        <label for="name">Your Name:</label><br />
+        <input type="text" id="name" required /><br />
+
+        <label for="review">Your Review:</label><br />
+        <textarea id="review" rows="4" required></textarea><br />
+
+        <button type="submit">Submit Review</button>
+        <p id="message"></p>
+      </form>
+
+      <!-- Reviews Display -->
+      <div id="reviewsList">
+        <h3>What our customers say:</h3>
+        <ul id="list"></ul>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        &copy; 2025 Burger Place. All rights reserved |
+        <a href="contact.html">Contact Us</a>
+      </p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      const form = document.getElementById("reviewForm");
+      const list = document.getElementById("list");
+      const message = document.getElementById("message");
+
+      // Load saved reviews
+      window.onload = function () {
+        const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
+        savedReviews.forEach(addReviewToPage);
+      };
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const review = document.getElementById("review").value.trim();
+
+        if (name === "" || review === "") {
+          message.style.color = "red";
+          message.textContent = "Please fill in all fields.";
+          return;
+        }
+
+        const reviewData = { name, review };
+
+        addReviewToPage(reviewData);
+        saveReview(reviewData);
+
+        message.style.color = "green";
+        message.textContent = "Thank you for your review!";
+
+        form.reset();
+      });
+
+      function addReviewToPage(data) {
+        const li = document.createElement("li");
+        li.innerHTML = "<strong>" + data.name + ":</strong> " + data.review;
+        list.appendChild(li);
+      }
+
+      function saveReview(data) {
+        const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+        reviews.push(data);
+        localStorage.setItem("reviews", JSON.stringify(reviews));
+      }
+    </script>
+    <script>
+function loadReviews() {
+  fetch("reviews.json")
+    .then(response => response.json())
+    .then(data => {
+      let result = "";
+      data.forEach(r => {
+        result += "<p><strong>" + r.name + ":</strong> " + r.comment + "</p>";
+      });
+      document.getElementById("reviews").innerHTML = result;
+    });
+}
+</script>
+
+  </body>
+</html>
